@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-public class P1Movement : MonoBehaviour
+public class P2Movement : MonoBehaviour
 {
     public float moveSpeed = 1.0f;
     public float health = 100f;
@@ -18,7 +18,7 @@ public class P1Movement : MonoBehaviour
     public bool isDown = false;
     public bool isJumping = false;
     public bool isShooting = false;
-    public bool isControlled = true;
+    public bool isControlled = false;
     public bool hasHit = false;
 
     public float jumpChrg = 0f;
@@ -27,14 +27,14 @@ public class P1Movement : MonoBehaviour
     Rigidbody2D rb;
     public Transform marker;
     public BallCode ball;
-    public P2Movement p2;
+    public P1Movement p1;
 
     void Start()
     {
+        isControlled = false;
         rb = GetComponent<Rigidbody2D>();
         //Change vars if different character
-        isControlled = true;
-}
+    }
 
 
     void Update()
@@ -43,6 +43,7 @@ public class P1Movement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isControlled = !isControlled;
+
             //Debug.Log("isActive is now: " + isActive);
         }
 
@@ -68,7 +69,7 @@ public class P1Movement : MonoBehaviour
                 isJumping = false;
             }
 
-            
+
 
             if (Input.GetMouseButton(0))
             {
@@ -88,11 +89,11 @@ public class P1Movement : MonoBehaviour
 
         }
 
-        if (!isControlled) 
+        if (!isControlled)
         {
             if (marker.position.x < 0 && !hasHit && !ball.canReset)
             {
-                if (p2.hasHit)
+                if (p1.hasHit)
                 {
                     Debug.Log("En2 Hit");
                     leftBound = -8;
@@ -100,8 +101,8 @@ public class P1Movement : MonoBehaviour
                 }
                 else
                 {
-                    leftBound = -8;
-                    rightBound = -4;
+                    leftBound = -4;
+                    rightBound = 0;
                 }
 
                 if (marker.position.x > leftBound && marker.position.x < rightBound)
@@ -122,7 +123,7 @@ public class P1Movement : MonoBehaviour
             }
             else
             {
-                if (transform.position.x > -6)
+                if (transform.position.x > -2)
                 {
                     rb.AddForce(Vector3.left * moveSpeed * 2);
                 }

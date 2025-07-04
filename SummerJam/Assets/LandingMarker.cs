@@ -33,6 +33,11 @@ public class LandingMarker : MonoBehaviour
             StartCoroutine(CalculatePath(1f));
         }
 
+        if (ballCode.canReset)
+        {
+            transform.position = new Vector3(-6, 0.5f, 0);
+        }
+
 
     }
 

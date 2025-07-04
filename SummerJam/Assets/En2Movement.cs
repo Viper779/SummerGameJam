@@ -45,9 +45,7 @@ public class En2Movement : MonoBehaviour
             {
                 if (en1.hasHit)
                 {
-                    Debug.Log("En1 Hit");
-                    leftBound = 0;
-                    rightBound = 8;
+                    StartCoroutine(wideAOR());
                 }
                 else
                 {
@@ -153,5 +151,12 @@ public class En2Movement : MonoBehaviour
             hasHit = false;
             lastHit = 0;
         }
+    }
+
+    IEnumerator wideAOR()
+    {
+        yield return new WaitForSeconds(0.7f);
+        leftBound = 0;
+        rightBound = 8;
     }
 }

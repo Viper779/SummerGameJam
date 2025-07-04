@@ -24,6 +24,7 @@ public class BallCode : MonoBehaviour
     public bool canReset = false;
 
     public P1Movement player1;
+    public P2Movement player2;
 
     public En1Movement en1;
 
@@ -54,14 +55,9 @@ public class BallCode : MonoBehaviour
         isReturning1 = en1.isShooting;
         isReturning2 = en2.isShooting;
 
-        if (isShooting)
-        {
-            Debug.Log("Shot Attempted");
-        }
-
         if (Input.GetMouseButton(0) && canReset)
         {
-            transform.position = new Vector3(-5, 4, 0);
+            transform.position = new Vector3(-6, 4, 0);
             rb.velocity = Vector2.zero;
             canReset = false;
         }
@@ -70,55 +66,97 @@ public class BallCode : MonoBehaviour
     
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider == null)
+        if (!canReset)
         {
-            Debug.LogWarning("Collision object does not have a collider.");
-            return; // Exit if there's no collider
-        }
-
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            hits++;
-            StartCoroutine(BounceRight());
-        }
-
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            hits++;
-            StartCoroutine(BounceLeft());
 
 
-        }
+            if (collision.collider == null)
+            {
+                Debug.LogWarning("Collision object does not have a collider.");
+                return; // Exit if there's no collider
+            }
 
-        if (collision.gameObject.CompareTag("Enemy2"))
-        {
-            hits++;
-            StartCoroutine(BounceLeft());
+            if (collision.gameObject.CompareTag("Player1"))
+            {
+                hits++;
+                StartCoroutine(BounceRight1());
+            }
+
+            if (collision.gameObject.CompareTag("Player2"))
+            {
+                hits++;
+                StartCoroutine(BounceRight2());
+            }
+
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                hits++;
+                StartCoroutine(BounceLeft());
 
 
-        }
+            }
 
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            rb.velocity = Vector2.zero;
+            if (collision.gameObject.CompareTag("Enemy2"))
+            {
+                hits++;
+                StartCoroutine(BounceLeft());
 
-            PointScored();
+
+            }
+
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                rb.velocity = Vector2.zero;
+
+                PointScored();
+            }
         }
     }
-    IEnumerator BounceRight()
+    IEnumerator BounceRight1()
     {
         yield return new WaitForSeconds(0.03f);
 
-        if (isShooting)
+        if (player1.isControlled)
         {
-            rb.AddForce(Vector2.right * charge1, ForceMode2D.Impulse);
-            //Debug.Log("Shot Made");
-            score = score + 1;
+            if (player1.isShooting)
+            {
+                rb.AddForce(Vector2.right * charge1, ForceMode2D.Impulse);
+                //Debug.Log("Shot Made");
+                score = score + 1;
+            }
+        }
+        else
+        {
+            rb.AddForce(Vector2.right * player1.shotCharge, ForceMode2D.Impulse);
+        }
+
+            rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+
+        
+        Debug.Log(hits);
+    }
+
+    IEnumerator BounceRight2()
+    {
+        yield return new WaitForSeconds(0.03f);
+
+        if (player2.isControlled)
+        {
+            if (player2.isShooting)
+            {
+                rb.AddForce(Vector2.right * charge1, ForceMode2D.Impulse);
+                //Debug.Log("Shot Made");
+                score = score + 1;
+            }
+        }
+        else
+        {
+            rb.AddForce(Vector2.right * player2.shotCharge, ForceMode2D.Impulse);
         }
 
         rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
-        
+
         Debug.Log(hits);
     }
 
