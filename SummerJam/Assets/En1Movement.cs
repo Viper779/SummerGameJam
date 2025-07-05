@@ -41,9 +41,10 @@ public class En1Movement : MonoBehaviour
     void Update()
     {
         //Debug.Log(lastHit);
-
-        if (marker.position.x > 0 && !hasHit && !ball.canReset)
-        {
+        if(!ball.canReset) 
+        { 
+            if (marker.position.x > 0 && !hasHit)
+            {
             if (en2.hasHit)
             {
                 StartCoroutine(wideAOR());
@@ -69,6 +70,8 @@ public class En1Movement : MonoBehaviour
 
             //Debug.Log(shotCharge);
             }
+            }
+        
         }
         else
         {

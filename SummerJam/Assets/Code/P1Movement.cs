@@ -54,18 +54,22 @@ public class P1Movement : MonoBehaviour
 
             if (Input.GetKey(KeyCode.W))
             {
+                if (!isJumping)
+                {
+                    rb.AddForce(Vector2.up * jump * 7, ForceMode2D.Impulse);
+                }
                 isJumping = true;
-                jumpChrg = Mathf.Clamp((jumpChrg + (2 * jump * Time.deltaTime)), 0f, 2.5f);  // Smooth charging
-                                                                                             //Debug.Log($"Charging: {jumpChrg}");
+
+                //jumpChrg = Mathf.Clamp((jumpChrg + (2 * jump * Time.deltaTime)), 0f, 2.5f);  // Smooth charging                                                                         //Debug.Log($"Charging: {jumpChrg}");
             }
 
             if (Input.GetKeyUp(KeyCode.W))
             {
-                rb.AddForce(Vector2.up * jumpChrg * 5, ForceMode2D.Impulse);
+               
                 //Debug.Log($"Jump! Power: {jumpChrg}");
                 jumpChrg = 0f;
-                StartCoroutine(Delay(1f));
-                isJumping = false;
+                StartCoroutine(Delay(1.5f));
+                //isJumping = false;
             }
 
             
@@ -80,7 +84,15 @@ public class P1Movement : MonoBehaviour
             {
                 isShooting = true;
                 //Debug.Log("Shot Attempted");
-                StartCoroutine(Delay(0.3f));
+                if(!isJumping)
+                {
+                    StartCoroutine(Delay(0.3f));
+                }
+                else
+                {
+                    StartCoroutine(Delay(1f));
+                }
+                
                 //isShooting = false;
                 //shotCharge = 0f;
 
@@ -152,6 +164,7 @@ public class P1Movement : MonoBehaviour
     IEnumerator Delay(float time)
     {
         yield return new WaitForSeconds(time);
+        isJumping = false;
         isShooting = false;
         shotCharge = 0f;
     }

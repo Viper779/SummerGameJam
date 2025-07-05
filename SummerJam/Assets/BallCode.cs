@@ -15,7 +15,7 @@ public class BallCode : MonoBehaviour
     private float charge1 = 0;
     private float return1 = 0;
 
-    private float charge2 = 0;
+    //private float charge2 = 0;
     private float return2 = 0;
 
     private bool isShooting = false;
@@ -130,9 +130,18 @@ public class BallCode : MonoBehaviour
             rb.AddForce(Vector2.right * player1.shotCharge, ForceMode2D.Impulse);
         }
 
+        if (player1.isJumping)
+        {
+            rb.AddForce(Vector2.up * bounceForce * 0.5f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * 3f, ForceMode2D.Impulse);
+        }
+        else
+        {
             rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+        }
+        //rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
-        
+
         Debug.Log(hits);
     }
 
@@ -154,7 +163,16 @@ public class BallCode : MonoBehaviour
             rb.AddForce(Vector2.right * player2.shotCharge, ForceMode2D.Impulse);
         }
 
-        rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+        if (player2.isJumping)
+        {
+            rb.AddForce(Vector2.up * bounceForce * 0.3f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * 1f, ForceMode2D.Impulse);
+        }
+        else
+        {
+            rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+        }
+            //rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
 
         Debug.Log(hits);
@@ -193,6 +211,10 @@ public class BallCode : MonoBehaviour
         }
 
         canReset = true;
+        en2.hasHit = false;
+        en1.hasHit = false;
+        player1.hasHit = false;
+        player2.hasHit = false;
     }
 
     IEnumerator Delay(float time)
