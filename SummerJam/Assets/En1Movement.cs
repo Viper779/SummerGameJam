@@ -16,6 +16,7 @@ public class En1Movement : MonoBehaviour
     public bool isJumping = false;
     public bool isShooting = false;
     public bool hasHit = false;
+    private bool isResettingHit = false;
     public float jumpChrg = 0f;
     public float shotCharge = 0f;
     public float lastHit = 0;
@@ -41,35 +42,35 @@ public class En1Movement : MonoBehaviour
     void Update()
     {
         //Debug.Log(lastHit);
-        if(!ball.canReset) 
+        if(!ball.canReset && !isStunned) 
         { 
             if (marker.position.x > 0 && !hasHit)
             {
-            if (en2.hasHit)
-            {
-                StartCoroutine(wideAOR());
-            }
-            else
-            {
-                leftBound = 0;
-                rightBound = 4;
-            }
+                if (en2.hasHit)
+                {
+                    StartCoroutine(wideAOR());
+                }
+                else
+                {
+                    leftBound = 0;
+                    rightBound = 4;
+                }
 
-            if (marker.position.x > leftBound && marker.position.x < rightBound )
-            {
-            if (transform.position.x - marker.position.x > 0)
-            {
-                rb.AddForce(Vector3.left * moveSpeed * 2);
-            }
-            else
-            {
-                rb.AddForce(Vector3.right * moveSpeed * 2);
-            }
+                if (marker.position.x > leftBound && marker.position.x < rightBound )
+                {
+                if (transform.position.x - marker.position.x > 0)
+                {
+                    rb.AddForce(Vector3.left * moveSpeed * 2);
+                }
+                else
+                {
+                    rb.AddForce(Vector3.right * moveSpeed * 2);
+                }
 
-            shotCharge = Mathf.Clamp((shotCharge + (4 * Time.deltaTime)), 0f, 4f);
+                shotCharge = Mathf.Clamp((shotCharge + (6 * Time.deltaTime)), 0f, 6f);
 
-            //Debug.Log(shotCharge);
-            }
+                //Debug.Log(shotCharge);
+                }
             }
         
         }
@@ -100,7 +101,7 @@ public class En1Movement : MonoBehaviour
             }
         }
 
-        if (hasHit)
+        if (hasHit && !isResettingHit)
         {
             StartCoroutine(ResetHit());
         }
@@ -118,13 +119,12 @@ public class En1Movement : MonoBehaviour
         {
             if (Random.value < 0.8f)
             {
+                shotCharge = shotCharge * Random.value;
                 StartCoroutine(MakeShot(0.2f));
             }
             else
             {
-                isStunned = true;
-
-                isStunned = false;
+                StartCoroutine(stunned());
             }
 
             hasHit = true;
@@ -146,19 +146,29 @@ public class En1Movement : MonoBehaviour
     {
         if (ball.hits > lastHit + 1)
         {
-            //Debug.Log("  " + ball.hits + "  " + lastHit);
+            isResettingHit = true;
+            Debug.Log("  " + ball.hits + "  " + lastHit);
 
             yield return new WaitForSeconds(0.2f);
             //Debug.Log("Reset");
             hasHit = false;
             lastHit = 0;
+            isResettingHit = false;
         }
     }
 
     IEnumerator wideAOR()
     {
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(0.1f);
         leftBound = 0;
         rightBound = 8;
+    }
+
+    IEnumerator stunned()
+    {
+        isStunned = true;
+        Debug.Log("En1 is Stunned");
+        yield return new WaitForSeconds(stun);
+        isStunned = false;
     }
 }

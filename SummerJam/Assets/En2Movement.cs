@@ -16,6 +16,7 @@ public class En2Movement : MonoBehaviour
     public bool isJumping = false;
     public bool isShooting = false;
     public bool hasHit = false;
+    private bool isResettingHit = false;
     public float jumpChrg = 0f;
     public float shotCharge = 0f;
     public float lastHit = 0;
@@ -39,7 +40,7 @@ public class En2Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!ball.canReset)
+        if (!ball.canReset && !isStunned)
         {
             if (marker.position.x > 0 && !hasHit)
             {
@@ -64,7 +65,7 @@ public class En2Movement : MonoBehaviour
                         rb.AddForce(Vector3.right * moveSpeed * 2);
                     }
 
-                    shotCharge = Mathf.Clamp((shotCharge + (4 * Time.deltaTime)), 0f, 4f);
+                    shotCharge = Mathf.Clamp((shotCharge + (6 * Time.deltaTime)), 0f, 6f);
 
                     //Debug.Log(shotCharge);
                 }
@@ -116,13 +117,12 @@ public class En2Movement : MonoBehaviour
         {
             if (Random.value < 0.8f)
             {
+                shotCharge = shotCharge * Random.value;
                 StartCoroutine(MakeShot(0.2f));
             }
             else
             {
-                isStunned = true;
-
-                isStunned = false;
+                StartCoroutine(stunned());
             }
 
             hasHit = true;
@@ -144,19 +144,29 @@ public class En2Movement : MonoBehaviour
     {
         if (ball.hits > lastHit + 1)
         {
+            isResettingHit = true;
             //Debug.Log("  " + ball.hits + "  " + lastHit);
-
             yield return new WaitForSeconds(0.2f);
             //Debug.Log("Reset");
             hasHit = false;
+
             lastHit = 0;
+            isResettingHit = false;
         }
     }
 
     IEnumerator wideAOR()
     {
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(0.1f);
         leftBound = 0;
         rightBound = 8;
+    }
+
+    IEnumerator stunned()
+    {
+        isStunned = true;
+        Debug.Log("En1 is Stunned");
+        yield return new WaitForSeconds(stun);
+        isStunned = false;
     }
 }

@@ -18,6 +18,14 @@ public class scoreText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreTxt.text = $"{ball.score}";
+        if (ball.lives <= 0)
+        {
+            scoreTxt.text = $"GAME OVER! Score: {ball.score}";
+        }
+        else
+        {
+            scoreTxt.text = $"Lives: {ball.lives} Score: {ball.score}";
+        }
+
     }
 }

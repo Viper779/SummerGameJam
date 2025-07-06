@@ -127,7 +127,7 @@ public class BallCode : MonoBehaviour
         }
         else
         {
-            rb.AddForce(Vector2.right * player1.shotCharge, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * player1.shotCharge * (0.8f + Random.value / 4) * (player1.transform.position.x / -6), ForceMode2D.Impulse);
         }
 
         if (player1.isJumping)
@@ -142,7 +142,7 @@ public class BallCode : MonoBehaviour
         //rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
 
-        Debug.Log(hits);
+        //Debug.Log(hits);
     }
 
     IEnumerator BounceRight2()
@@ -160,7 +160,7 @@ public class BallCode : MonoBehaviour
         }
         else
         {
-            rb.AddForce(Vector2.right * player2.shotCharge, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * player2.shotCharge * (1f + Random.value / 4) * (player2.transform.position.x / -6), ForceMode2D.Impulse);
         }
 
         if (player2.isJumping)
@@ -183,13 +183,13 @@ public class BallCode : MonoBehaviour
         yield return new WaitForSeconds(0.03f);
         if (isReturning1)
         {
-            rb.AddForce(Vector2.left * return1, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.left * (return1+2) * (1.5f + Random.value/2) * (en1.transform.position.x/6), ForceMode2D.Impulse);
             //Debug.Log("Shot Returned");
         }
         //rb.AddForce(Vector2.left * return1, ForceMode2D.Impulse);
         if (isReturning2)
         {
-            rb.AddForce(Vector2.left * return2, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.left * (return2+2) * (1.5f + Random.value/2) * (en2.transform.position.x/6), ForceMode2D.Impulse);
             //Debug.Log("Shot Returned");
         }
 
@@ -203,11 +203,27 @@ public class BallCode : MonoBehaviour
     {
         if (transform.position.x < 0)
         {
-            lives = lives - 1;
+            if (transform.position.x < -8 && !player1.hasHit && !player2.hasHit)
+            {
+                score = score + 20;
+            }
+            else
+            {
+                lives = lives - 1;
+            }
+            
         }
         else
         {
-            score = score + 20;
+            if (transform.position.x > 8 && !en1.hasHit && !en2.hasHit)
+            {
+                lives = lives - 1;
+            }
+            else
+            {
+                score = score + 20;
+            }
+
         }
 
         canReset = true;
@@ -215,6 +231,7 @@ public class BallCode : MonoBehaviour
         en1.hasHit = false;
         player1.hasHit = false;
         player2.hasHit = false;
+        hits = 0;
     }
 
     IEnumerator Delay(float time)

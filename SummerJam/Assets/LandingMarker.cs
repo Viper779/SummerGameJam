@@ -28,6 +28,11 @@ public class LandingMarker : MonoBehaviour
         if (ball == null || ballrb == null || ballCode == null)
             return;
 
+        if (ballCode.hits == 0)
+        {
+            currentCount = ballCode.hits;
+        }
+
         if (currentCount < ballCode.hits)
         {
             StartCoroutine(CalculatePath(1f));
@@ -65,7 +70,7 @@ public class LandingMarker : MonoBehaviour
             transform.position = new Vector3(predictedX, 1f, 0f);
             currentCount = ballCode.hits;
 
-            Debug.Log(predictedX);
+            //Debug.Log(predictedX);
         }
         finally
         {
